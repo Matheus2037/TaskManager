@@ -24,26 +24,19 @@ fun MainScreen() {
             BottomNavigationBar(navController = navController)
         }
         ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            NavHost(
-                navController = navController,
-                startDestination = BottomNavItem.CreateTask.route,
-                modifier = Modifier.padding(innerPadding)
-            ){
-                composable(BottomNavItem.CreateTask.route){
-                    CreateTaskScreen(innerPadding)
-                }
-                composable(BottomNavItem.ListTask.route){
-                    ListTaskScreen(innerPadding)
-                }
-                composable(BottomNavItem.Settings.route){
-                    SettingsScreen(innerPadding)
-                }
+        NavHost(
+            navController = navController,
+            startDestination = BottomNavItem.CreateTask.route,
+            modifier = Modifier.padding(innerPadding)
+        ){
+            composable(BottomNavItem.CreateTask.route){
+                CreateTaskScreen()
+            }
+            composable(BottomNavItem.ListTask.route){
+                ListTaskScreen()
+            }
+            composable(BottomNavItem.Settings.route){
+                SettingsScreen()
             }
         }
     }

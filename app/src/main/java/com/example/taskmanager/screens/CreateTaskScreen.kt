@@ -24,7 +24,7 @@ import com.example.taskmanager.SharedPreferences
 
 
 @Composable
-fun CreateTaskScreen(paddingValues: PaddingValues){
+fun CreateTaskScreen(modifier: Modifier = Modifier){
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     val localData = SharedPreferences(LocalContext.current)
@@ -72,5 +72,5 @@ fun CreateTaskScreen(paddingValues: PaddingValues){
 @Preview(showBackground = true)
 @Composable
 fun CreateTaskScreenPreview(){
-    CreateTaskScreen(paddingValues = PaddingValues())
+    CreateTaskScreen()
 }

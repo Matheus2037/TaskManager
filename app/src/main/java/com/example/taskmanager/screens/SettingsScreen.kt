@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SettingsScreen(paddingValues: PaddingValues, modifier: Modifier = Modifier){
+fun SettingsScreen(modifier: Modifier = Modifier){
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
