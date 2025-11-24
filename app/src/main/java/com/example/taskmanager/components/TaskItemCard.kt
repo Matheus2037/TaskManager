@@ -2,12 +2,14 @@ package com.example.taskmanager.components
 
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Card
@@ -17,6 +19,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +36,7 @@ import com.example.taskmanager.Constants
 @Composable
 fun TaskItemCard(modifier: Modifier = Modifier){
     val localData = com.example.taskmanager.SharedPreferences(LocalContext.current)
+    var showMenu by remember { mutableStateOf(false) }
 
     ElevatedCard(elevation = CardDefaults.cardElevation(
         defaultElevation = 6.dp),
@@ -47,7 +55,7 @@ fun TaskItemCard(modifier: Modifier = Modifier){
                     modifier = Modifier.weight(0.85f)
                 )
                 IconButton(
-                    onClick = { /* TODO */ },
+                    onClick = { showMenu = true },
                     modifier = Modifier.weight(0.15f).size(24.dp)
                 ) {
                     Icon(
@@ -65,6 +73,19 @@ fun TaskItemCard(modifier: Modifier = Modifier){
                     lineHeight = 12.sp,
                     overflow = TextOverflow.Ellipsis)
             }
+        }
+    }
+    if (showMenu) {
+        Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd)){
+            TaskDropdownMenu(
+                onDismiss = { showMenu = false },
+                onEditClick = {
+                    /* TODO */
+                },
+                onDeleteClick = {
+                    /* TODO */
+                }
+            )
         }
     }
 }
