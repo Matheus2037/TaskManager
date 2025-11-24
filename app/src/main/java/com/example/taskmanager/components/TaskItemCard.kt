@@ -20,9 +20,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -76,7 +77,7 @@ fun TaskItemCard(modifier: Modifier = Modifier){
         }
     }
     if (showMenu) {
-        Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd)){
+        Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd).padding(8.dp)){
             TaskDropdownMenu(
                 onDismiss = { showMenu = false },
                 onEditClick = {
