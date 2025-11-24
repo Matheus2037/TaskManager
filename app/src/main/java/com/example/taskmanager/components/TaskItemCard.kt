@@ -38,6 +38,7 @@ import com.example.taskmanager.Constants
 fun TaskItemCard(modifier: Modifier = Modifier){
     val localData = com.example.taskmanager.SharedPreferences(LocalContext.current)
     var showMenu by remember { mutableStateOf(false) }
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     ElevatedCard(elevation = CardDefaults.cardElevation(
         defaultElevation = 6.dp),
@@ -81,7 +82,7 @@ fun TaskItemCard(modifier: Modifier = Modifier){
             TaskDropdownMenu(
                 onDismiss = { showMenu = false },
                 onEditClick = {
-                    /* TODO */
+                    showBottomSheet = true
                 },
                 onDeleteClick = {
                     /* TODO */
@@ -89,8 +90,16 @@ fun TaskItemCard(modifier: Modifier = Modifier){
             )
         }
     }
+    if (showBottomSheet) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            TaskPartialBottomSheet(onDismiss = { showBottomSheet = false })
+        }
+    }
 }
-//testeeeee
+
 @Composable
 @Preview
 fun TaskItemCardPreview(){
