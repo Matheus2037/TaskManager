@@ -65,7 +65,7 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             ) {
                 Icon(
                     imageVector = Grid,
-                    contentDescription = "Dois itens por linha"
+                    contentDescription = "Dois itens listados por linha"
                 )
             }
             IconButton(
@@ -77,7 +77,7 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             ) {
                 Icon(
                     imageVector = GridList,
-                    contentDescription = "Um item por linha"
+                    contentDescription = "Um item listado por linha"
                 )
             }
         }
