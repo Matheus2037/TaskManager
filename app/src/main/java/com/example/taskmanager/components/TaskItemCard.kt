@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -20,7 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +37,7 @@ fun TaskItemCard(modifier: Modifier = Modifier){
     val localData = com.example.taskmanager.SharedPreferences(LocalContext.current)
     var showMenu by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
+    var showDeleteAlertDialog by remember { mutableStateOf(false) }
 
     ElevatedCard(elevation = CardDefaults.cardElevation(
         defaultElevation = 6.dp),
@@ -85,7 +84,7 @@ fun TaskItemCard(modifier: Modifier = Modifier){
                     showBottomSheet = true
                 },
                 onDeleteClick = {
-                    /* TODO */
+                    showDeleteAlertDialog = true
                 }
             )
         }
@@ -97,6 +96,16 @@ fun TaskItemCard(modifier: Modifier = Modifier){
         ) {
             TaskPartialBottomSheet(onDismiss = { showBottomSheet = false })
         }
+    }
+    if (showDeleteAlertDialog) {
+        DeleteAlertDialog(
+            onDismiss = { showDeleteAlertDialog = false },
+            onConfirmation = {
+                localData.delete(Constants.TITLE)
+                localData.delete(Constants.DESCRIPTION)
+                showDeleteAlertDialog = false
+            }
+        )
     }
 }
 

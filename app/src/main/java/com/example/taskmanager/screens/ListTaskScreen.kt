@@ -38,8 +38,8 @@ import com.example.taskmanager.components.TaskItemCard
 fun ListTaskScreen(modifier: Modifier = Modifier) {
     val localData = com.example.taskmanager.SharedPreferences(LocalContext.current)
     val taskList = List(50) { "Task $it" }
-    var teste by remember {
-        val storedValue = localData.get("teste")
+    var gridMode by remember {
+        val storedValue = localData.get("gridMode")
         mutableIntStateOf(storedValue?.toIntOrNull() ?: 160)
     }
 
@@ -58,8 +58,8 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             )
             IconButton(
                 onClick = {
-                    teste = 160
-                    localData.save("teste", teste.toString())
+                    gridMode = 160
+                    localData.save("gridMode", gridMode.toString())
                 },
                 modifier = Modifier.weight(0.25f).size(24.dp)
             ) {
@@ -70,8 +70,8 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             }
             IconButton(
                 onClick = {
-                    teste = 320
-                    localData.save("teste", teste.toString())
+                    gridMode = 320
+                    localData.save("gridMode", gridMode.toString())
                 },
                 modifier = Modifier.weight(0.25f).size(24.dp)
             ) {
@@ -83,7 +83,7 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = teste.dp),
+            columns = GridCells.Adaptive(minSize = gridMode.dp),
             contentPadding = PaddingValues(12.dp),
             modifier = Modifier.fillMaxWidth().padding(12.dp)
         ) {
