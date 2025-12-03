@@ -10,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,29 +20,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
+import com.example.taskmanager.viewmodel.CreateTaskViewModel
+import com.example.taskmanager.viewmodel.CreateTaskViewModelFactory
 
 
 @Composable
 fun CreateTaskScreen(modifier: Modifier = Modifier){
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
     val localData = SharedPreferences(LocalContext.current)
+    val createTaskViewModel: CreateTaskViewModel = viewModel(factory = CreateTaskViewModelFactory(localData))
+
+    val title by createTaskViewModel.title.collectAsState()
+    val description by createTaskViewModel.description.collectAsState()
     
     Column(
         modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
     ) {
 
         OutlinedTextField(
-            value = title,
-            onValueChange = {title = it},
+            value = title?:"",
+            onValueChange = {createTaskViewModel.setTitle(it)},
             label = { Text("Título")},
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            value = description,
-            onValueChange = {description = it},
+            value = description?:"",
+            onValueChange = {createTaskViewModel.setDescription(it)},
             label = { Text("Descrição")},
             modifier = Modifier.fillMaxWidth()
         )
@@ -54,12 +61,7 @@ fun CreateTaskScreen(modifier: Modifier = Modifier){
         ){
 
             Button(onClick = {
-                localData.save(Constants.TITLE, title)
-                localData.save(Constants.DESCRIPTION, description)
-                Log.i(
-                    "Informacao",
-                    "CreateTaskScreen: Titulo: ${localData.get(Constants.TITLE)} Descricao: ${localData.get(Constants.DESCRIPTION)}"
-                )
+                createTaskViewModel.createTask()
             }) {
                 Text("Criar")
             }

@@ -13,14 +13,22 @@ class ListTaskScreenViewModel (val localData: SharedPreferences) : ViewModel() {
     )
     val gridMode : StateFlow<Int> = _gridMode
 
+
+
     private val _activeMenuIndex = MutableStateFlow<Int?>(null)
     val activeMenuIndex: StateFlow<Int?> = _activeMenuIndex
+
+
 
     private val _showDeleteAlertDialog = MutableStateFlow(false)
     val showDeleteAlertDialog : StateFlow<Boolean> = _showDeleteAlertDialog
 
+
+
     private val _showBottomSheet = MutableStateFlow(false)
     val showBottomSheet : StateFlow<Boolean> = _showBottomSheet
+
+
 
     //Funções para lógica de alterar Grid da listagem
     fun setGridMode(newMode: Int){
@@ -29,6 +37,9 @@ class ListTaskScreenViewModel (val localData: SharedPreferences) : ViewModel() {
         localData.save(Constants.GRID_MODE, newMode.toString())
     }
     //Fim da lógica de alterar Grid da listagem
+
+
+
 
     //Funções para lógica de deletar TASK
     fun deleteTask() {
@@ -41,11 +52,16 @@ class ListTaskScreenViewModel (val localData: SharedPreferences) : ViewModel() {
     }
     //Fim da lógica de deletar TASK
 
+
+
+
     //Funções para lógica de editar TASK
     fun setShowBottomSheet(value: Boolean){
         _showBottomSheet.value = value
     }
     //Fim da lógica de edição de TASK
+
+
 
     //Funções para lógica de menu da TASK
     fun onMenuClick(index: Int) {
