@@ -10,27 +10,38 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.taskmanager.Constants
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.taskmanager.SharedPreferences
+import com.example.taskmanager.viewmodel.EditTaskViewModel
+import com.example.taskmanager.viewmodel.EditTaskViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskPartialBottomSheet( onDismiss: () -> Unit ) {
     val localData = SharedPreferences(LocalContext.current)
-    var title by remember { mutableStateOf(localData.get(Constants.TITLE)) }
-    var description by remember { mutableStateOf(localData.get(Constants.DESCRIPTION)) }
+    val editTaskViewModel: EditTaskViewModel = viewModel(factory = EditTaskViewModelFactory(localData))
 
+    val title by editTaskViewModel.title.collectAsState()
+    val description by editTaskViewModel.description.collectAsState()
+
+    val showBottomSheet by editTaskViewModel.showBottomSheet.collectAsState()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
     )
+    LaunchedEffect(showBottomSheet) {
+        if (showBottomSheet) {
+            sheetState.show()
+        } else {
+            sheetState.hide()
+        }
+    }
 
     ModalBottomSheet(
         modifier = Modifier.fillMaxHeight(),
@@ -43,22 +54,25 @@ fun TaskPartialBottomSheet( onDismiss: () -> Unit ) {
         )
         OutlinedTextField(
             value = title?: "",
-            onValueChange = {title = it},
+            onValueChange = {editTaskViewModel.setTitle(it)},
             label = { Text("Titulo: ")},
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         )
         OutlinedTextField(
             value = description?: "",
-            onValueChange = {description = it},
+            onValueChange = {editTaskViewModel.setDescription(it)},
             label = { Text("Descrição: ") },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         )
 
         Button(
             modifier = Modifier.padding(8.dp),
             onClick = {
-                localData.save(Constants.TITLE, title?: "")
-                localData.save(Constants.DESCRIPTION, description?: "")
+                editTaskViewModel.editTask()
                 onDismiss()
             }
         ) {
