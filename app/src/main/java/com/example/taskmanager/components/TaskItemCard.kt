@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,34 +31,44 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.taskmanager.Constants
+import com.example.taskmanager.viewmodel.ListTaskScreenViewModel
+import com.example.taskmanager.viewmodel.ListTaskScreenViewModelFactory
 
 @Composable
-fun TaskItemCard(modifier: Modifier = Modifier){
+fun TaskItemCard(modifier: Modifier = Modifier,
+                 isMenuVisible: Boolean,
+                 onMenuClick: () -> Unit,
+                 onEditClick: () -> Unit,
+                 onDeleteClick: () -> Unit
+){
     val localData = com.example.taskmanager.SharedPreferences(LocalContext.current)
-    var showMenu by remember { mutableStateOf(false) }
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteAlertDialog by remember { mutableStateOf(false) }
+    val listTaskScreenViewModel: ListTaskScreenViewModel = viewModel(factory =  ListTaskScreenViewModelFactory(localData))
 
     ElevatedCard(elevation = CardDefaults.cardElevation(
         defaultElevation = 6.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(142.dp)
-        .padding(10.dp)
+            .padding(10.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp).fillMaxWidth()){
+        Column(modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()){
             Row (
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = localData.get(Constants.TITLE)?: "", fontWeight = FontWeight.SemiBold, fontSize = 16.sp,
+                    text = localData.get(Constants.TITLE)?: "", fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
                     modifier = Modifier.weight(0.85f)
                 )
                 IconButton(
-                    onClick = { showMenu = true },
-                    modifier = Modifier.weight(0.15f).size(24.dp)
+                    onClick = { onMenuClick() },
+                    modifier = Modifier
+                        .weight(0.15f)
+                        .size(24.dp)
                 ) {
                     Icon(
                         Icons.Rounded.MoreVert,
@@ -70,47 +81,31 @@ fun TaskItemCard(modifier: Modifier = Modifier){
             ) {
                 Text(text =  localData.get(Constants.DESCRIPTION)?: "",
                     fontWeight = FontWeight.Light,
-                    fontSize = 12.sp,
+                    fontSize = 8.sp,
                     lineHeight = 12.sp,
                     overflow = TextOverflow.Ellipsis)
             }
         }
     }
-    if (showMenu) {
+    if (isMenuVisible) {
         Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd).padding(8.dp)){
             TaskDropdownMenu(
-                onDismiss = { showMenu = false },
+                onDismiss = {
+                    onMenuClick()
+                },
                 onEditClick = {
-                    showBottomSheet = true
+                    onEditClick()
                 },
                 onDeleteClick = {
-                    showDeleteAlertDialog = true
+                    onDeleteClick()
                 }
             )
         }
     }
-    if (showBottomSheet) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            TaskPartialBottomSheet(onDismiss = { showBottomSheet = false })
-        }
-    }
-    if (showDeleteAlertDialog) {
-        DeleteAlertDialog(
-            onDismiss = { showDeleteAlertDialog = false },
-            onConfirmation = {
-                localData.delete(Constants.TITLE)
-                localData.delete(Constants.DESCRIPTION)
-                showDeleteAlertDialog = false
-            }
-        )
-    }
 }
 
-@Composable
-@Preview
-fun TaskItemCardPreview(){
-    TaskItemCard()
-}
+//@Composable
+//@Preview
+//fun TaskItemCardPreview(){
+//    TaskItemCard()
+//}

@@ -4,5 +4,6 @@ class Constants {
     companion object{
         const val TITLE = "Title"
         const val DESCRIPTION = "Description"
+        const val GRID_MODE = "GridMode"
     }
 }

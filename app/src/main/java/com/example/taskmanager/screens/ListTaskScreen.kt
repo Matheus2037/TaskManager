@@ -6,20 +6,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -30,18 +27,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.taskmanager.Constants
+import com.example.taskmanager.components.DeleteAlertDialog
 import com.example.taskmanager.components.Grid
 import com.example.taskmanager.components.GridList
+import com.example.taskmanager.components.TaskDropdownMenu
 import com.example.taskmanager.components.TaskItemCard
+import com.example.taskmanager.components.TaskPartialBottomSheet
+import com.example.taskmanager.viewmodel.ListTaskScreenViewModel
+import com.example.taskmanager.viewmodel.ListTaskScreenViewModelFactory
 
 @Composable
 fun ListTaskScreen(modifier: Modifier = Modifier) {
     val localData = com.example.taskmanager.SharedPreferences(LocalContext.current)
+    val listTaskScreenViewModel: ListTaskScreenViewModel = viewModel(factory = ListTaskScreenViewModelFactory(localData))
     val taskList = List(50) { "Task $it" }
-    var gridMode by remember {
-        val storedValue = localData.get("gridMode")
-        mutableIntStateOf(storedValue?.toIntOrNull() ?: 160)
-    }
+
+    val gridMode by listTaskScreenViewModel.gridMode.collectAsState()
+    val showDeleteAlertDialog by listTaskScreenViewModel.showDeleteAlertDialog.collectAsState(false)
+    val showBottomSheet by listTaskScreenViewModel.showBottomSheet.collectAsState(false)
+    val activeMenuIndex by listTaskScreenViewModel.activeMenuIndex.collectAsState()
 
     Column(
         modifier = Modifier
@@ -49,7 +55,9 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             .fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -58,10 +66,11 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             )
             IconButton(
                 onClick = {
-                    gridMode = 160
-                    localData.save("gridMode", gridMode.toString())
+                    listTaskScreenViewModel.setGridMode(160)
                 },
-                modifier = Modifier.weight(0.25f).size(24.dp)
+                modifier = Modifier
+                    .weight(0.25f)
+                    .size(24.dp)
             ) {
                 Icon(
                     imageVector = Grid,
@@ -70,10 +79,11 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             }
             IconButton(
                 onClick = {
-                    gridMode = 320
-                    localData.save("gridMode", gridMode.toString())
+                    listTaskScreenViewModel.setGridMode(320)
                 },
-                modifier = Modifier.weight(0.25f).size(24.dp)
+                modifier = Modifier
+                    .weight(0.25f)
+                    .size(24.dp)
             ) {
                 Icon(
                     imageVector = GridList,
@@ -85,16 +95,51 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = gridMode.dp),
             contentPadding = PaddingValues(12.dp),
-            modifier = Modifier.fillMaxWidth().padding(12.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
         ) {
             items(taskList.size) { index ->
-                TaskItemCard()
+                TaskItemCard(
+                    isMenuVisible = activeMenuIndex == index,
+                    onMenuClick = { listTaskScreenViewModel.onMenuClick(index) },
+                    onEditClick = {
+                        listTaskScreenViewModel.setShowBottomSheet(true)
+                        listTaskScreenViewModel.closeMenus()
+                    },
+                    onDeleteClick = {
+                        listTaskScreenViewModel.setShowDeleteAlertDialog(true)
+                        listTaskScreenViewModel.closeMenus()
+                    }
+                )
             }
         }
     }
-    Box (modifier = Modifier.fillMaxSize().padding(10.dp), contentAlignment = Alignment.BottomEnd){
+    Box (modifier = Modifier
+        .fillMaxSize()
+        .padding(10.dp), contentAlignment = Alignment.BottomEnd){
         FloatingActionButton(onClick = { /* TODO */ }) {
             Text(text = "+")
+        }
+    }
+
+    if (showDeleteAlertDialog) {
+        DeleteAlertDialog(
+            onDismiss = { listTaskScreenViewModel.setShowDeleteAlertDialog(false) },
+            onConfirmation = {
+                listTaskScreenViewModel.deleteTask()
+            }
+        )
+    }
+
+    if (showBottomSheet) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            TaskPartialBottomSheet(
+                onDismiss = { listTaskScreenViewModel.setShowBottomSheet(false) }
+            )
         }
     }
 }
