@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
 import com.example.taskmanager.viewmodel.EditTaskViewModel
 import com.example.taskmanager.viewmodel.EditTaskViewModelFactory
@@ -49,13 +50,13 @@ fun TaskPartialBottomSheet( onDismiss: () -> Unit ) {
         onDismissRequest = { onDismiss() }
     ) {
         Text(
-            "Editando Tarefa: ",
+            Constants.EDIT_TASK,
             modifier = Modifier.padding(16.dp)
         )
         OutlinedTextField(
             value = title?: "",
             onValueChange = {editTaskViewModel.setTitle(it)},
-            label = { Text("Titulo: ")},
+            label = { Text(Constants.LABEL_TITLE)},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -63,7 +64,7 @@ fun TaskPartialBottomSheet( onDismiss: () -> Unit ) {
         OutlinedTextField(
             value = description?: "",
             onValueChange = {editTaskViewModel.setDescription(it)},
-            label = { Text("Descrição: ") },
+            label = { Text(Constants.LABEL_DESCRIPTION) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -76,7 +77,7 @@ fun TaskPartialBottomSheet( onDismiss: () -> Unit ) {
                 onDismiss()
             }
         ) {
-            Text("Confirmar Alteração")
+            Text(Constants.CONFIRM_EDIT_BUTTON)
         }
     }
 }

@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.taskmanager.Constants
 
 sealed class BottomNavItem(
     val title: String,
@@ -20,17 +21,17 @@ sealed class BottomNavItem(
     val route: String
 ) {
     object CreateTask : BottomNavItem(
-        "Criar Tarefa",
+        Constants.CREATE_NAV_TITLE,
         Icons.Default.AddCircle,
         "create_task"
     )
     object ListTask : BottomNavItem(
-        "Listar Tarefas",
+        Constants.LIST_NAV_TITLE,
         Icons.Default.DateRange,
         "list_task"
     )
     object Settings : BottomNavItem(
-        "Configurações",
+        Constants.CONFIGURATION_NAV_TITLE,
         Icons.Default.Settings,
         "settings"
     )

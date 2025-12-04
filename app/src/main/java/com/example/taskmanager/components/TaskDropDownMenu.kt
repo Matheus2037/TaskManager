@@ -8,6 +8,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.example.taskmanager.Constants
 
 
 @Composable
@@ -21,13 +22,13 @@ fun TaskDropdownMenu(
         onDismissRequest = { onDismiss() }
     ) {
         DropdownMenuItem(
-            text = { Text("Editar") },
-            trailingIcon = { Icon(Icons.Rounded.Edit, contentDescription = "Editar Task") },
+            text = { Text(Constants.EDIT) },
+            trailingIcon = { Icon(Icons.Rounded.Edit, contentDescription = Constants.EDIT_OPTION_MENU) },
             onClick = { onEditClick() }
         )
         DropdownMenuItem(
-            text = { Text("Deletar") },
-            trailingIcon = { Icon(Icons.Rounded.Delete, contentDescription = "Deletar Task") },
+            text = { Text(Constants.DELETE) },
+            trailingIcon = { Icon(Icons.Rounded.Delete, contentDescription = Constants.DELETE_OPTION_MENU) },
             onClick = { onDeleteClick() }
         )
     }

@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.taskmanager.Constants
 import com.example.taskmanager.components.DeleteAlertDialog
 import com.example.taskmanager.components.Grid
 import com.example.taskmanager.components.GridList
@@ -55,7 +56,7 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Modo de Visualização: ", fontSize = 12.sp,
+                text = Constants.VISUALIZATION_MODE, fontSize = 12.sp,
                 modifier = Modifier.weight(0.50f)
             )
             IconButton(
@@ -68,7 +69,7 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             ) {
                 Icon(
                     imageVector = Grid,
-                    contentDescription = "Dois itens listados por linha"
+                    contentDescription = Constants.VISUALIZATION_MODE_OPTIONS_2
                 )
             }
             IconButton(
@@ -81,7 +82,7 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
             ) {
                 Icon(
                     imageVector = GridList,
-                    contentDescription = "Um item listado por linha"
+                    contentDescription = Constants.VISUALIZATION_MODE_OPTIONS_1
                 )
             }
         }

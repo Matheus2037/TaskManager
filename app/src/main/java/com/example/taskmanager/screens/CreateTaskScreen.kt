@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
 import com.example.taskmanager.viewmodel.CreateTaskViewModel
 import com.example.taskmanager.viewmodel.CreateTaskViewModelFactory
@@ -36,13 +37,13 @@ fun CreateTaskScreen(modifier: Modifier = Modifier){
         OutlinedTextField(
             value = title?:"",
             onValueChange = {createTaskViewModel.setTitle(it)},
-            label = { Text("Título")},
+            label = { Text(Constants.LABEL_TITLE)},
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             value = description?:"",
             onValueChange = {createTaskViewModel.setDescription(it)},
-            label = { Text("Descrição")},
+            label = { Text(Constants.LABEL_DESCRIPTION)},
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -56,7 +57,7 @@ fun CreateTaskScreen(modifier: Modifier = Modifier){
             Button(onClick = {
                 createTaskViewModel.createTask()
             }) {
-                Text("Criar")
+                Text(Constants.CREATE_BUTTON)
             }
         }
     }

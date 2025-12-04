@@ -72,7 +72,7 @@ fun TaskItemCard(modifier: Modifier = Modifier,
                 ) {
                     Icon(
                         Icons.Rounded.MoreVert,
-                        contentDescription = "Task Options"
+                        contentDescription = Constants.TASK_OPTION_MENU
                     )
                 }
             }

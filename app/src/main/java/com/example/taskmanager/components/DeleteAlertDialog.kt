@@ -5,6 +5,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.example.taskmanager.Constants
 
 @Composable
 fun DeleteAlertDialog(
@@ -17,14 +18,14 @@ fun DeleteAlertDialog(
         },
         confirmButton = {
             Button(onClick = { onConfirmation() }) {
-                Text(text = "Confirmar")
+                Text(text = Constants.CONFIRM)
             }
         },
         dismissButton = {
             Button(onClick = { onDismiss() }) {
-                Text(text = "Cancelar")
+                Text(text = Constants.CANCEL)
             }
         },
-        text = { Text("Deseja realmente cancelar essa Task ?") }
+        text = { Text(Constants.CONFIRMATION_TEXT) }
     )
 }
