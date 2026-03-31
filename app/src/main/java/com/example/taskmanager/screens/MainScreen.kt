@@ -7,16 +7,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.taskmanager.data.TaskDatabase
 import com.example.taskmanager.screens.navigation.BottomNavItem
 import com.example.taskmanager.screens.navigation.BottomNavigationBar
 
+private lateinit var localdb: TaskDatabase
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+    localdb = TaskDatabase.getDatabase(LocalContext.current)
+
 
     Scaffold(modifier = Modifier
         .fillMaxSize(),
@@ -30,13 +35,13 @@ fun MainScreen() {
             modifier = Modifier.padding(innerPadding)
         ){
             composable(BottomNavItem.CreateTask.route){
-                CreateTaskScreen()
+                CreateTaskScreen(localdb = localdb)
             }
             composable(BottomNavItem.ListTask.route){
-                ListTaskScreen()
+                ListTaskScreen(localdb = localdb)
             }
             composable(BottomNavItem.Settings.route){
-                SettingsScreen()
+                SettingsScreen(localdb = localdb)
             }
         }
     }

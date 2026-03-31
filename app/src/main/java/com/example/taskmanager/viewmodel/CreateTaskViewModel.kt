@@ -4,10 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
+import com.example.taskmanager.data.TaskDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class CreateTaskViewModel (val localData: SharedPreferences) : ViewModel(){
+class CreateTaskViewModel (val localData: SharedPreferences, localdb: TaskDatabase) : ViewModel(){
 
     private val _title = MutableStateFlow( localData.get(Constants.TITLE) )
     val title : StateFlow<String?> = _title
@@ -16,8 +17,10 @@ class CreateTaskViewModel (val localData: SharedPreferences) : ViewModel(){
     val description : StateFlow<String?> = _description
 
     fun createTask() {
-        localData.save(Constants.TITLE, _title.value?:"")
-        localData.save(Constants.DESCRIPTION, _description.value?:"")
+//        localData.save(Constants.TITLE, _title.value?:"")
+//        localData.save(Constants.DESCRIPTION, _description.value?:"")
+
+
 
         Log.i(
             "Informacao",

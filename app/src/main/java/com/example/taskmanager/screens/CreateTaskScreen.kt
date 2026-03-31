@@ -18,14 +18,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
+import com.example.taskmanager.data.TaskDatabase
 import com.example.taskmanager.viewmodel.CreateTaskViewModel
 import com.example.taskmanager.viewmodel.CreateTaskViewModelFactory
 
 
 @Composable
-fun CreateTaskScreen(modifier: Modifier = Modifier){
+fun CreateTaskScreen(modifier: Modifier = Modifier, localdb: TaskDatabase){
     val localData = SharedPreferences(LocalContext.current)
-    val createTaskViewModel: CreateTaskViewModel = viewModel(factory = CreateTaskViewModelFactory(localData))
+    val createTaskViewModel: CreateTaskViewModel = viewModel(factory = CreateTaskViewModelFactory(localData, localdb))
 
     val title by createTaskViewModel.title.collectAsState()
     val description by createTaskViewModel.description.collectAsState()
@@ -65,8 +66,8 @@ fun CreateTaskScreen(modifier: Modifier = Modifier){
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun CreateTaskScreenPreview(){
-    CreateTaskScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun CreateTaskScreenPreview(){
+//    CreateTaskScreen()
+//}

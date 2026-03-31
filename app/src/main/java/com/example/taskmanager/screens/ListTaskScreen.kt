@@ -30,11 +30,12 @@ import com.example.taskmanager.components.Grid
 import com.example.taskmanager.components.GridList
 import com.example.taskmanager.components.TaskItemCard
 import com.example.taskmanager.components.TaskPartialBottomSheet
+import com.example.taskmanager.data.TaskDatabase
 import com.example.taskmanager.viewmodel.ListTaskScreenViewModel
 import com.example.taskmanager.viewmodel.ListTaskScreenViewModelFactory
 
 @Composable
-fun ListTaskScreen(modifier: Modifier = Modifier) {
+fun ListTaskScreen(modifier: Modifier = Modifier, localdb: TaskDatabase) {
     val localData = com.example.taskmanager.SharedPreferences(LocalContext.current)
     val listTaskScreenViewModel: ListTaskScreenViewModel = viewModel(factory = ListTaskScreenViewModelFactory(localData))
     val taskList = List(50) { "Task $it" }
@@ -139,9 +140,9 @@ fun ListTaskScreen(modifier: Modifier = Modifier) {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun ListTaskScreenPreview(){
-    ListTaskScreen()
-}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun ListTaskScreenPreview(){
+//    ListTaskScreen(localdb = localdb)
+//}
