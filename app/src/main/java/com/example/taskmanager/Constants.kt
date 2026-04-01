@@ -33,5 +33,7 @@ class Constants {
         const val CONFIRM = "Confirmar"
         const val CANCEL = "Cancelar"
         const val CONFIRMATION_TEXT = "Deseja realmente cancelar essa Task ?"
+
+        const val NO_DATA_FOUND = "Nenhum dado encontrado"
     }
 }

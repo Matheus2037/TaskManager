@@ -2,13 +2,16 @@ package com.example.taskmanager.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
 import com.example.taskmanager.data.TaskDatabase
+import com.example.taskmanager.data.TaskEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
-class CreateTaskViewModel (val localData: SharedPreferences, localdb: TaskDatabase) : ViewModel(){
+class CreateTaskViewModel (val localData: SharedPreferences, private val localdb: TaskDatabase) : ViewModel(){
 
     private val _title = MutableStateFlow( localData.get(Constants.TITLE) )
     val title : StateFlow<String?> = _title
@@ -17,15 +20,11 @@ class CreateTaskViewModel (val localData: SharedPreferences, localdb: TaskDataba
     val description : StateFlow<String?> = _description
 
     fun createTask() {
-//        localData.save(Constants.TITLE, _title.value?:"")
-//        localData.save(Constants.DESCRIPTION, _description.value?:"")
+        viewModelScope.launch {
+            localdb.taskDao().insertAll(TaskEntity(0, _title.value?:"", _description.value?:""))
+            Log.i("CreateTaskViewModel", "Task created: ${localdb.taskDao().getAll()}")
 
-
-
-        Log.i(
-            "Informacao",
-            "CreateTaskScreen: Titulo: ${localData.get(Constants.TITLE)} Descricao: ${localData.get(Constants.DESCRIPTION)}"
-        )
+        }
     }
 
     fun setTitle(value: String){

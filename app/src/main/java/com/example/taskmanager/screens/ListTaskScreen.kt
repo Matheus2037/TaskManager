@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,13 +39,17 @@ import com.example.taskmanager.viewmodel.ListTaskScreenViewModelFactory
 @Composable
 fun ListTaskScreen(modifier: Modifier = Modifier, localdb: TaskDatabase) {
     val localData = com.example.taskmanager.SharedPreferences(LocalContext.current)
-    val listTaskScreenViewModel: ListTaskScreenViewModel = viewModel(factory = ListTaskScreenViewModelFactory(localData))
-    val taskList = List(50) { "Task $it" }
+    val listTaskScreenViewModel: ListTaskScreenViewModel = viewModel(factory = ListTaskScreenViewModelFactory(localData, localdb))
 
     val gridMode by listTaskScreenViewModel.gridMode.collectAsState()
     val showDeleteAlertDialog by listTaskScreenViewModel.showDeleteAlertDialog.collectAsState(false)
     val showBottomSheet by listTaskScreenViewModel.showBottomSheet.collectAsState(false)
     val activeMenuIndex by listTaskScreenViewModel.activeMenuIndex.collectAsState()
+    val tasks by listTaskScreenViewModel.tasks.collectAsState()
+
+    LaunchedEffect(key1 = Unit) {
+        listTaskScreenViewModel.loadTask()
+    }
 
     Column(
         modifier = Modifier
@@ -87,28 +93,33 @@ fun ListTaskScreen(modifier: Modifier = Modifier, localdb: TaskDatabase) {
                 )
             }
         }
-
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = gridMode.dp),
-            contentPadding = PaddingValues(12.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        ) {
-            items(taskList.size) { index ->
-                TaskItemCard(
-                    isMenuVisible = activeMenuIndex == index,
-                    onMenuClick = { listTaskScreenViewModel.onMenuClick(index) },
-                    onEditClick = {
-                        listTaskScreenViewModel.setShowBottomSheet(true)
-                        listTaskScreenViewModel.closeMenus()
-                    },
-                    onDeleteClick = {
-                        listTaskScreenViewModel.setShowDeleteAlertDialog(true)
-                        listTaskScreenViewModel.closeMenus()
-                    }
-                )
+        if (tasks.isNotEmpty()) {
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = gridMode.dp),
+                contentPadding = PaddingValues(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+            ) {
+                itemsIndexed(tasks) { index, taskEntity ->
+                    TaskItemCard(
+                        localdb = localdb,
+                        entityTask = taskEntity,
+                        isMenuVisible = activeMenuIndex == index,
+                        onMenuClick = { listTaskScreenViewModel.onMenuClick(index) },
+                        onEditClick = {
+                            listTaskScreenViewModel.setShowBottomSheet(true)
+                            listTaskScreenViewModel.closeMenus()
+                        },
+                        onDeleteClick = {
+                            listTaskScreenViewModel.setShowDeleteAlertDialog(true)
+                            listTaskScreenViewModel.closeMenus()
+                        }
+                    )
+                }
             }
+        } else {
+                Text(text = Constants.NO_DATA_FOUND)
         }
     }
     Box (modifier = Modifier

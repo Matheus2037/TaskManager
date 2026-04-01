@@ -33,18 +33,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.taskmanager.Constants
+import com.example.taskmanager.data.TaskDatabase
+import com.example.taskmanager.data.TaskEntity
 import com.example.taskmanager.viewmodel.ListTaskScreenViewModel
 import com.example.taskmanager.viewmodel.ListTaskScreenViewModelFactory
 
 @Composable
 fun TaskItemCard(modifier: Modifier = Modifier,
+                 localdb: TaskDatabase,
+                 entityTask: TaskEntity,
                  isMenuVisible: Boolean,
                  onMenuClick: () -> Unit,
                  onEditClick: () -> Unit,
                  onDeleteClick: () -> Unit
 ){
     val localData = com.example.taskmanager.SharedPreferences(LocalContext.current)
-    val listTaskScreenViewModel: ListTaskScreenViewModel = viewModel(factory =  ListTaskScreenViewModelFactory(localData))
+    val listTaskScreenViewModel: ListTaskScreenViewModel = viewModel(factory =  ListTaskScreenViewModelFactory(localData, localdb))
 
     ElevatedCard(elevation = CardDefaults.cardElevation(
         defaultElevation = 6.dp),
@@ -61,7 +65,7 @@ fun TaskItemCard(modifier: Modifier = Modifier,
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = localData.get(Constants.TITLE)?: "", fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
+                    text = entityTask.title, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
                     modifier = Modifier.weight(0.85f)
                 )
                 IconButton(
@@ -79,7 +83,7 @@ fun TaskItemCard(modifier: Modifier = Modifier,
             Row(modifier = Modifier
                 .padding(top = 8.dp)
             ) {
-                Text(text =  localData.get(Constants.DESCRIPTION)?: "",
+                Text(text =  entityTask.content,
                     fontWeight = FontWeight.Light,
                     fontSize = 8.sp,
                     lineHeight = 12.sp,

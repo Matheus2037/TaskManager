@@ -1,18 +1,24 @@
 package com.example.taskmanager.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
+import com.example.taskmanager.data.TaskDatabase
+import com.example.taskmanager.data.TaskEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
-class ListTaskScreenViewModel (val localData: SharedPreferences) : ViewModel() {
+class ListTaskScreenViewModel (val localData: SharedPreferences, private val localdb: TaskDatabase) : ViewModel() {
 
     private val _gridMode = MutableStateFlow(
         localData.get(Constants.GRID_MODE) ?.toIntOrNull() ?: 160
     )
     val gridMode : StateFlow<Int> = _gridMode
 
+    private val _tasks = MutableStateFlow<List<TaskEntity>>(emptyList())
+    val tasks : StateFlow<List<TaskEntity>> = _tasks
 
 
     private val _activeMenuIndex = MutableStateFlow<Int?>(null)
@@ -27,6 +33,12 @@ class ListTaskScreenViewModel (val localData: SharedPreferences) : ViewModel() {
 
     private val _showBottomSheet = MutableStateFlow(false)
     val showBottomSheet : StateFlow<Boolean> = _showBottomSheet
+
+    fun loadTask() {
+        viewModelScope.launch {
+            _tasks.value = localdb.taskDao().getAll()
+        }
+    }
 
 
 
