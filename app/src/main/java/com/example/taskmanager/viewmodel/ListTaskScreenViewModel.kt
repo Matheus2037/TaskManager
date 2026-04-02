@@ -54,9 +54,11 @@ class ListTaskScreenViewModel (val localData: SharedPreferences, private val loc
 
 
     //Funções para lógica de deletar TASK
-    fun deleteTask() {
-        localData.delete(Constants.TITLE)
-        localData.delete(Constants.DESCRIPTION)
+    fun deleteTask(task : TaskEntity) {
+        viewModelScope.launch {
+            localdb.taskDao().delete(task)
+            _tasks.value = localdb.taskDao().getAll()
+        }
         _showDeleteAlertDialog.value = false
     }
     fun setShowDeleteAlertDialog(value: Boolean) {

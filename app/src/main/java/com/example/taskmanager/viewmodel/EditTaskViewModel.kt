@@ -5,10 +5,11 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.lifecycle.ViewModel
 import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
+import com.example.taskmanager.data.TaskDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class EditTaskViewModel(val localData: SharedPreferences) : ViewModel() {
+class EditTaskViewModel(val localData: SharedPreferences, localdb: TaskDatabase) : ViewModel() {
 
     private val _title = MutableStateFlow( localData.get(Constants.TITLE) )
     val title : StateFlow<String?> = _title

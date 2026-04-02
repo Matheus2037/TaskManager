@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.example.taskmanager.Constants
+import com.example.taskmanager.data.TaskEntity
 
 @Composable
 fun DeleteAlertDialog(

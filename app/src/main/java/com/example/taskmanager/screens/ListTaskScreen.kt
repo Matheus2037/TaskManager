@@ -19,6 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +36,7 @@ import com.example.taskmanager.components.GridList
 import com.example.taskmanager.components.TaskItemCard
 import com.example.taskmanager.components.TaskPartialBottomSheet
 import com.example.taskmanager.data.TaskDatabase
+import com.example.taskmanager.data.TaskEntity
 import com.example.taskmanager.viewmodel.ListTaskScreenViewModel
 import com.example.taskmanager.viewmodel.ListTaskScreenViewModelFactory
 
@@ -46,8 +50,9 @@ fun ListTaskScreen(modifier: Modifier = Modifier, localdb: TaskDatabase) {
     val showBottomSheet by listTaskScreenViewModel.showBottomSheet.collectAsState(false)
     val activeMenuIndex by listTaskScreenViewModel.activeMenuIndex.collectAsState()
     val tasks by listTaskScreenViewModel.tasks.collectAsState()
+    var selectedItem by remember { mutableStateOf(TaskEntity()) }
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = listTaskScreenViewModel.tasks) {
         listTaskScreenViewModel.loadTask()
     }
 
@@ -112,6 +117,7 @@ fun ListTaskScreen(modifier: Modifier = Modifier, localdb: TaskDatabase) {
                             listTaskScreenViewModel.closeMenus()
                         },
                         onDeleteClick = {
+                            selectedItem = taskEntity
                             listTaskScreenViewModel.setShowDeleteAlertDialog(true)
                             listTaskScreenViewModel.closeMenus()
                         }
@@ -134,7 +140,7 @@ fun ListTaskScreen(modifier: Modifier = Modifier, localdb: TaskDatabase) {
         DeleteAlertDialog(
             onDismiss = { listTaskScreenViewModel.setShowDeleteAlertDialog(false) },
             onConfirmation = {
-                listTaskScreenViewModel.deleteTask()
+                listTaskScreenViewModel.deleteTask(selectedItem)
             }
         )
     }
