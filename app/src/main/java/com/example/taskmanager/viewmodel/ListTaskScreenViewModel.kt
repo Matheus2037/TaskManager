@@ -7,8 +7,11 @@ import com.example.taskmanager.SharedPreferences
 import com.example.taskmanager.data.TaskDatabase
 import com.example.taskmanager.data.TaskEntity
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.collections.emptyList
 
 class ListTaskScreenViewModel (val localData: SharedPreferences, private val localdb: TaskDatabase) : ViewModel() {
 
@@ -18,7 +21,11 @@ class ListTaskScreenViewModel (val localData: SharedPreferences, private val loc
     val gridMode : StateFlow<Int> = _gridMode
 
     private val _tasks = MutableStateFlow<List<TaskEntity>>(emptyList())
-    val tasks : StateFlow<List<TaskEntity>> = _tasks
+    val tasks : StateFlow<List<TaskEntity>> = localdb.taskDao().getAll().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
 
     private val _activeMenuIndex = MutableStateFlow<Int?>(null)
@@ -36,7 +43,7 @@ class ListTaskScreenViewModel (val localData: SharedPreferences, private val loc
 
     fun loadTask() {
         viewModelScope.launch {
-            _tasks.value = localdb.taskDao().getAll()
+            _tasks.value = localdb.taskDao().getAllSuspend()
         }
     }
 
@@ -57,7 +64,7 @@ class ListTaskScreenViewModel (val localData: SharedPreferences, private val loc
     fun deleteTask(task : TaskEntity) {
         viewModelScope.launch {
             localdb.taskDao().delete(task)
-            _tasks.value = localdb.taskDao().getAll()
+            _tasks.value = localdb.taskDao().getAllSuspend()
         }
         _showDeleteAlertDialog.value = false
     }

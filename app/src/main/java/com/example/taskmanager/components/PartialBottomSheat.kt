@@ -20,14 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
+import com.example.taskmanager.data.TaskDatabase
 import com.example.taskmanager.viewmodel.EditTaskViewModel
 import com.example.taskmanager.viewmodel.EditTaskViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskPartialBottomSheet( onDismiss: () -> Unit ) {
+fun TaskPartialBottomSheet( taskId: Long, onDismiss: () -> Unit, localdb: TaskDatabase ) {
     val localData = SharedPreferences(LocalContext.current)
-    val editTaskViewModel: EditTaskViewModel = viewModel(factory = EditTaskViewModelFactory(localData))
+    val editTaskViewModel: EditTaskViewModel = viewModel(factory = EditTaskViewModelFactory(localData, localdb, taskId))
 
     val title by editTaskViewModel.title.collectAsState()
     val description by editTaskViewModel.description.collectAsState()
@@ -82,8 +83,8 @@ fun TaskPartialBottomSheet( onDismiss: () -> Unit ) {
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun TaskPartialBottomSheetPreview(){
-    TaskPartialBottomSheet(onDismiss = {})
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun TaskPartialBottomSheetPreview(){
+//    TaskPartialBottomSheet(onDismiss = {})
+//}

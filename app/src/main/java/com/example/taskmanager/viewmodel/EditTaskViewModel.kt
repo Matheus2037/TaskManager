@@ -3,13 +3,16 @@ package com.example.taskmanager.viewmodel
 import android.util.Log
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.taskmanager.Constants
 import com.example.taskmanager.SharedPreferences
 import com.example.taskmanager.data.TaskDatabase
+import com.example.taskmanager.data.TaskEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
-class EditTaskViewModel(val localData: SharedPreferences, localdb: TaskDatabase) : ViewModel() {
+class EditTaskViewModel(val localData: SharedPreferences, private val localdb: TaskDatabase, private val taskId: Long) : ViewModel() {
 
     private val _title = MutableStateFlow( localData.get(Constants.TITLE) )
     val title : StateFlow<String?> = _title
@@ -20,15 +23,26 @@ class EditTaskViewModel(val localData: SharedPreferences, localdb: TaskDatabase)
     private val _showBottomSheet = MutableStateFlow(false)
     val showBottomSheet: StateFlow<Boolean> = _showBottomSheet
 
-    fun editTask() {
-        localData.save(Constants.TITLE, _title.value?:"")
-        localData.save(Constants.DESCRIPTION, _description.value?:"")
+    init {
+        viewModelScope.launch {
+            val task = localdb.taskDao().getTaskById(taskId)
+            task?.let {
+                _title.value = it.title
+                _description.value = it.content
+            }
+        }
+    }
 
-        Log.i(
-            "Edicao de TASK",
-            "PartialBottomSheet: Titulo: ${localData.get(Constants.TITLE)} Descricao: ${localData.get(
-                Constants.DESCRIPTION)}"
-        )
+    fun editTask() {
+
+        viewModelScope.launch {
+            val updatedTask = TaskEntity(
+                id = taskId,
+                title = _title.value?:"",
+                content = _description.value?:""
+            )
+            localdb.taskDao().update(updatedTask)
+        }
     }
 
     fun setTitle(value: String){

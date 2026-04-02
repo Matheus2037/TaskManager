@@ -113,6 +113,7 @@ fun ListTaskScreen(modifier: Modifier = Modifier, localdb: TaskDatabase) {
                         isMenuVisible = activeMenuIndex == index,
                         onMenuClick = { listTaskScreenViewModel.onMenuClick(index) },
                         onEditClick = {
+                            selectedItem = taskEntity
                             listTaskScreenViewModel.setShowBottomSheet(true)
                             listTaskScreenViewModel.closeMenus()
                         },
@@ -151,7 +152,9 @@ fun ListTaskScreen(modifier: Modifier = Modifier, localdb: TaskDatabase) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TaskPartialBottomSheet(
-                onDismiss = { listTaskScreenViewModel.setShowBottomSheet(false) }
+                taskId = selectedItem.id,
+                onDismiss = { listTaskScreenViewModel.setShowBottomSheet(false) },
+                localdb = localdb
             )
         }
     }
